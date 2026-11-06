@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreeToolHub - Free Online Tools</title>
+<meta name="description" content="Free online tools to compress images, calculate age, resize images and convert text. Easy, fast and free.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#102b50;color:white;padding:22px 15px;text-align:center}
+header h1{margin:0;font-size:30px}
+header p{margin:9px 0 0;color:#dce9fa}
+nav{background:white;padding:15px;text-align:center;box-shadow:0 2px 8px #ddd}
+nav a{color:#174c83;text-decoration:none;margin:0 12px;font-weight:bold}
+.hero{text-align:center;padding:45px 15px}
+.hero h2{font-size:30px;margin-bottom:10px}
+.hero p{color:#596579}
+.tools{max-width:950px;margin:auto;padding:15px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card{background:white;padding:24px;border-radius:14px;box-shadow:0 3px 15px #dce2ec;text-align:center}
+.card .emoji{font-size:38px}
+.card h3{color:#174c83}
+button{background:#1769aa;color:white;border:0;padding:12px 18px;border-radius:8px;cursor:pointer;font-size:15px}
+button:hover{background:#104b7d}
+input,textarea{width:100%;padding:12px;margin:10px 0;border:1px solid #ccd4df;border-radius:8px}
+.toolbox{max-width:650px;margin:25px auto;background:white;padding:22px;border-radius:14px;box-shadow:0 3px 15px #dce2ec}
+.toolbox h2{text-align:center;color:#174c83}
+.result{text-align:center;font-weight:bold;margin:15px;color:#1769aa}
+footer{text-align:center;padding:25px;background:#102b50;color:white;margin-top:40px}
+</style>
+</head>
+<body>
+<header>
+<h1>FreeToolHub</h1>
+<p>Free Online Tools for Everyone</p>
+</header>
+<nav>
+<a href="#tools">Tools</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</nav>
+<section class="hero">
+<h2>Welcome to FreeToolHub</h2>
+<p>Simple, useful and free online tools for everyone.</p>
+</section>
+
+<section class="tools" id="tools">
+<div class="card">
+<div class="emoji">🖼️</div>
+<h3>Image Compressor</h3>
+<p>Reduce image file size easily.</p>
+<button onclick="showTool('compress')">Open Tool</button>
+</div>
+<div class="card">
+<div class="emoji">📅</div>
+<h3>Age Calculator</h3>
+<p>Calculate your age in seconds.</p>
+<button onclick="showTool('age')">Open Tool</button>
+</div>
+<div class="card">
+<div class="emoji">🔤</div>
+<h3>Text Converter</h3>
+<p>Convert text to uppercase or lowercase.</p>
+<button onclick="showTool('text')">Open Tool</button>
+</div>
+</section>
+
+<div class="toolbox" id="compress" hidden>
+<h2>Image Compressor</h2>
+<input type="file" id="imageFile" accept="image/*">
+<button onclick="compressImage()">Compress Image</button>
+<div class="result" id="imageResult"></div>
+</div>
+
+<div class="toolbox" id="age" hidden>
+<h2>Age Calculator</h2>
+<label>Date of Birth</label>
+<input type="date" id="birthDate">
+<button onclick="calculateAge()">Calculate Age</button>
+<div class="result" id="ageResult"></div>
+</div>
+
+<div class="toolbox" id="text" hidden>
+<h2>Text Converter</h2>
+<textarea id="textInput" rows="4" placeholder="Enter your text here"></textarea>
+<button onclick="convertText('upper')">UPPERCASE</button>
+<button onclick="convertText('lower')">lowercase</button>
+<div class="result" id="textResult"></div>
+</div>
+
+<section class="toolbox" id="about">
+<h2>About FreeToolHub</h2>
+<p>FreeToolHub is a simple online tools website designed to make everyday tasks easier. Our goal is to provide useful tools that everyone can use for free.</p>
+</section>
+
+<section class="toolbox" id="contact">
+<h2>Contact Us</h2>
+<p>For questions or suggestions, please contact the website owner.</p>
+</section>
+
+<footer>
+<p>© 2026 FreeToolHub. All rights reserved.</p>
+<p>Free Online Tools for Everyone</p>
+</footer>
+
+<script>
+function showTool(id){
+document.querySelectorAll('.toolbox').forEach(x=>{
+if(['compress','age','text'].includes(x.id)) x.hidden=true;
+});
+document.getElementById(id).hidden=false;
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function calculateAge(){
+let value=document.getElementById('birthDate').value;
+if(!value){alert('Please select your date of birth');return;}
+let birth=new Date(value+'T00:00:00');
+let today=new Date();
+if(birth>today){alert('Please select a valid date');return;}
+let years=today.getFullYear()-birth.getFullYear();
+let months=today.getMonth()-birth.getMonth();
+let days=today.getDate()-birth.getDate();
+if(days<0){months--;days+=new Date(today.getFullYear(),today.getMonth(),0).getDate();}
+if(months<0){years--;months+=12;}
+document.getElementById('ageResult').textContent=years+' years, '+months+' months, '+days+' days';
+}
+function convertText(type){
+let value=document.getElementById('textInput').value;
+let result=type==='upper'?value.toUpperCase():value.toLowerCase();
+document.getElementById('textResult').textContent=result;
+}
+function compressImage(){
+let file=document.getElementById('imageFile').files[0];
+if(!file){alert('Please choose an image');return;}
+let reader=new FileReader();
+reader.onload=function(e){
+let img=new Image();
+img.onload=function(){
+let canvas=document.createElement('canvas');
+let scale=Math.min(1,1600/img.width,1600/img.height);
+canvas.width=img.width*scale;
+canvas.height=img.height*scale;
+canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+canvas.toBlob(function(blob){
+if(!blob){alert('Could not compress this image');return;}
+let url=URL.createObjectURL(blob);
+let a=document.createElement('a');
+a.href=url;
+a.download='compressed-image.jpg';
+a.click();
+document.getElementById('imageResult').textContent=
+'Original: '+Math.round(file.size/1024)+' KB | Compressed: '+Math.round(blob.size/1024)+' KB';
+},'image/jpeg',0.7);
+};
+img.src=e.target.result;
+};
+reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
